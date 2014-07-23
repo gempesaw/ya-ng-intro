@@ -1,0 +1,80 @@
+<!doctype html>
+<html ng-app="proposalApp">
+  <head>
+    <title>CFP</title>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+  </head>
+  <body class="container" ng-controller="proposalCtrl as Proposal">
+    <h1>Lunch & Learn Talks</h1>
+
+    <div class="form-group" >
+      Propose a new talk:
+
+      <input type="text" class="form-control" placeholder="Title"
+             ng-model="Proposal.newTalk.title"/>
+      <textarea class="form-control" placeholder="Description"
+                ng-model="Proposal.newTalk.desc"></textarea>
+
+      {{ Proposal.newTalk }}
+    </div>
+
+    <button type="submit" class="btn btn-default"
+            ng-click="Proposal.submit()"> Submit </button>
+
+    <div>
+      <h2>Submitted Talks</h2>
+
+      <div class="panel panel-default"
+           ng-repeat="talk in Proposal.talks">
+        <div class="panel-heading">
+          {{ talk.title }} ({{ talk.vote }})
+          <a href="#" ng-click="Proposal.upvote(talk)">up</a> |
+          <a href="#" ng-click="Proposal.downvote(talk)">down</a>
+        </div>
+        <div class="panel-body"> {{ talk.desc }} </div>
+      </div>
+
+    </div>
+
+    <script>
+     'use strict';
+
+     var app = angular.module('proposalApp', []);
+
+     app.controller('proposalCtrl', function () {
+         var self = this;
+
+         self.upvote = function (talk) {
+             talk.vote++;
+         }
+
+         self.downvote = function (talk) {
+             talk.vote--;
+         }
+
+         self.talks = [
+             {
+                 title: 'Foobar',
+                 desc: 'How much does a bar of foo weigh?',
+                 vote: 0
+             },
+             {
+                 title: 'Carry on my wayward son',
+                 desc: 'There\'ll be peace when you are done',
+                 vote: 0
+             }
+         ];
+
+         self.submit = function () {
+             self.talks.push(self.newTalk);
+             self.newTalk = {title: '', desc: '', vote: 0};
+         };
+     });
+
+    </script>
+
+  </body>
+</html>
