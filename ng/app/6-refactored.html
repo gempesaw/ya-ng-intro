@@ -9,7 +9,7 @@
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
   </head>
   <body class="container" ng-controller="proposalCtrl as Proposal">
-    <h2>Refactoring</h2>
+    <h2>Slightly less bad practices</h2>
 
     <div sc-add-talk></div>
 
@@ -58,11 +58,11 @@
          }
      });
 
-     app.factory('talksBackend', function ($resource) {
+     app.factory('Talks', function ($resource) {
          return $resource('/talks');
      });
 
-     app.controller('proposalCtrl', function (talksBackend) {
+     app.controller('proposalCtrl', function (Talks) {
          var self = this;
 
          self.deleteTalk = function (needle) {
@@ -71,7 +71,7 @@
              });
          }
 
-         self.talks = talksBackend.query();
+         self.talks = Talks.query();
 
          self.submit = function () {
              self.newTalk.vote = 0;

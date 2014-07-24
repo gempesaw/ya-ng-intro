@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
   </head>
   <body class="container" ng-controller="proposalCtrl as Proposal">
@@ -47,29 +48,19 @@
     <script>
      'use strict';
 
-     var app = angular.module('proposalApp', []);
+     var app = angular.module('proposalApp', ['ngResource']);
 
-     app.controller('proposalCtrl', function () {
+     app.controller('proposalCtrl', function ($resource) {
          var self = this;
+
+         var Talks = $resource('/talks');
+         self.talks = Talks.query();
 
          self.deleteTalk = function (needle) {
              self.talks = self.talks.filter( function (talk) {
                  return talk.title !== needle.title
              });
          }
-
-         self.talks = [
-             {
-                 title: 'Foobar',
-                 desc: 'How much does a bar of foo weigh?',
-                 vote: 2
-             },
-             {
-                 title: 'Carry on my wayward son',
-                 desc: 'There\'ll be peace when you are done',
-                 vote: 1
-             }
-         ];
 
          self.submit = function () {
              self.newTalk.vote = 0;
