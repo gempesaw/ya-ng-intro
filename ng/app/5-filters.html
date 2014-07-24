@@ -27,8 +27,11 @@
     <div>
       <h2>Submitted Talks</h2>
 
+      <input type="text" class="form-control" placeholder="Search talks"
+             ng-model="searchText"/>
+
       <div class="panel panel-default"
-           ng-repeat="talk in Proposal.talks | orderBy:'vote':true">
+           ng-repeat="talk in Proposal.talks | filter:searchText | orderBy:'vote':true">
         <div class="panel-heading">
           {{ talk.title }} ({{ talk.vote }})
           <a href="#" ng-click="Proposal.upvote(talk)">up</a> |
