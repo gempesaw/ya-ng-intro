@@ -1,0 +1,90 @@
+<!doctype html>
+<html ng-app="proposalApp">
+  <head>
+    <title>CFP</title>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/firebase/firebase.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angularfire/angularfire.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+  </head>
+  <body class="container" ng-controller="proposalCtrl as Proposal">
+    <h2>Firebase!</h2>
+
+    <div sc-add-talk></div>
+
+    <submitted-talks></submitted-talks>
+
+    <script>
+     'use strict';
+
+     var app = angular.module('proposalApp', ['firebase']);
+
+     app.controller('proposalCtrl', function ($firebase) {
+         var self = this;
+
+         var talksRef = new Firebase('https://angular-proposals-app.firebaseio.com/talks');
+         self.talks = $firebase(talksRef);
+
+         self.submit = function () {
+             self.newTalk.vote = 0;
+             self.talks.$add(self.newTalk);
+             self.newTalk = {title: '', desc: '', vote: 0};
+         };
+
+         self.deleteTalk = function (needle) {
+             self.talks = self.talks.filter( function (talk) {
+                 return talk.title !== needle.title
+             });
+         }
+
+         self.upvote = function (talk) {
+             talk.vote++;
+         }
+
+         self.downvote = function (talk) {
+             talk.vote--;
+         }
+     });
+
+     app.directive('scAddTalk', function () {
+         return {
+             template: '<div class="form-group" >' +
+                       '  Propose a new talk:' +
+                       '  <input type="text" class="form-control" placeholder="Title"' +
+                       '         ng-model="Proposal.newTalk.title"/>' +
+                       '  <textarea class="form-control" placeholder="Description"' +
+                       '            ng-model="Proposal.newTalk.desc"></textarea>' +
+                       '  {{ Proposal.newTalk }}' +
+                       '</div>' +
+                       '<button type="submit" class="btn btn-default"' +
+                       '        ng-click="Proposal.submit()"> Submit </button>',
+             restrict: 'A'
+         }
+     });
+
+     app.directive('submittedTalks', function () {
+         return {
+             template: '<div>' +
+                       '  <h2>Submitted Talks</h2>' +
+                       '  <div class="panel panel-default"' +
+                       '       ng-repeat="talk in Proposal.talks | orderBy:\'vote\':true">' +
+                       '    <div class="panel-heading">' +
+                       '      {{ talk.title }} ({{ talk.vote }})' +
+                       '      <a href="#" ng-click="Proposal.upvote(talk)">up</a> |' +
+                       '      <a href="#" ng-click="Proposal.downvote(talk)">down</a>' +
+                       '      <a href="#" class="pull-right"' +
+                       '         ng-click="Proposal.deleteTalk(talk)" >delete</a>' +
+                       '    </div>' +
+                       '    <div class="panel-body"> {{ talk.desc }} </div>' +
+                       '  </div>' +
+                       '</div>',
+             restrict: 'E'
+         }
+     });
+
+    </script>
+
+  </body>
+</html>
