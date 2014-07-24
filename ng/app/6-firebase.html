@@ -4,7 +4,9 @@
     <title>CFP</title>
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
     <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/firebase/firebase.js"></script>
     <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angularfire/angularfire.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
   </head>
   <body class="container" ng-controller="proposalCtrl as Proposal">
@@ -44,35 +46,25 @@
     <script>
      'use strict';
 
-     var app = angular.module('proposalApp', []);
+     var app = angular.module('proposalApp', ['firebase']);
 
-     app.controller('proposalCtrl', function () {
+     app.controller('proposalCtrl', function ($firebase) {
          var self = this;
+
+         var talksRef = new Firebase('https://angular-proposals-app.firebaseio.com/talks');
+         self.talks = $firebase(talksRef);
+
+         self.submit = function () {
+             self.newTalk.vote = 0;
+             self.talks.$add(self.newTalk);
+             self.newTalk = {title: '', desc: '', vote: 0};
+         };
 
          self.deleteTalk = function (needle) {
              self.talks = self.talks.filter( function (talk) {
                  return talk.title !== needle.title
              });
          }
-
-         self.talks = [
-             {
-                 title: 'Foobar',
-                 desc: 'How much does a bar of foo weigh?',
-                 vote: 2,
-             },
-             {
-                 title: 'Carry on my wayward son',
-                 desc: 'There\'ll be peace when you are done',
-                 vote: 1,
-             }
-         ];
-
-         self.submit = function () {
-             self.newTalk.vote = 0;
-             self.talks.push(self.newTalk);
-             self.newTalk = {title: '', desc: '', vote: 0};
-         };
 
          self.upvote = function (talk) {
              talk.vote++;
