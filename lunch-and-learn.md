@@ -8,7 +8,7 @@ controls: true
 
 --
 
-# An AngularJS Adventure
+# angular js
 ## what, why, and how: ng and you
 
 <!-- hi, my name is Daniel Gempesaw! I'm going to be talking about -->
@@ -21,7 +21,7 @@ controls: true
 ### who am I?
 
 * our Software Testing Architect!
-* live & work in New Haven, CT
+* live in New Haven, CT
 * Started using Angular this year for Honeydew
 
 ![honeydew](honeydew.png)
