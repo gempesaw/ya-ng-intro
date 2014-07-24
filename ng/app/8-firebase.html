@@ -34,18 +34,29 @@
          };
 
          self.deleteTalk = function (needle) {
-             self.talks = self.talks.filter( function (talk) {
-                 return talk.title !== needle.title
-             });
-         }
+             self.talks.$remove(needle.$id);
+         };
 
          self.upvote = function (talk) {
              talk.vote++;
-         }
+             self.update(talk);
+         };
 
          self.downvote = function (talk) {
              talk.vote--;
-         }
+             self.update(talk);
+         };
+
+         self.update = function (talk) {
+             var key = talk.$id;
+             [ '$id', '$$hashKey' ].forEach( function (key) {
+                 if ( talk.hasOwnProperty(key) ) {
+                     delete talk[key];
+                 }
+             });
+
+             talksRef.child(key).set(talk);
+         };
      });
 
      app.directive('scAddTalk', function () {
@@ -69,7 +80,7 @@
              template: '<div>' +
                        '  <h2>Submitted Talks</h2>' +
                        '  <div class="panel panel-default"' +
-                       '       ng-repeat="talk in Proposal.talks | orderBy:\'vote\':true">' +
+                       '       ng-repeat="talk in Proposal.talks | orderByPriority">' +
                        '    <div class="panel-heading">' +
                        '      {{ talk.title }} ({{ talk.vote }})' +
                        '      <a href="#" ng-click="Proposal.upvote(talk)">up</a> |' +
