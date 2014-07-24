@@ -21,11 +21,17 @@
 
      var app = angular.module('proposalApp', ['firebase']);
 
-     app.controller('proposalCtrl', function ($firebase) {
+     app.factory('Talks', function ($firebase) {
+         var ref = new Firebase('https://angular-proposals-app.firebaseio.com/talks');
+         var backend = $firebase(ref);
+         backend.fireRef = ref;
+         return backend;
+     });
+
+     app.controller('proposalCtrl', function (Talks) {
          var self = this;
 
-         var talksRef = new Firebase('https://angular-proposals-app.firebaseio.com/talks');
-         self.talks = $firebase(talksRef);
+         self.talks = Talks;
 
          self.submit = function () {
              self.newTalk.vote = 0;
@@ -55,7 +61,7 @@
                  }
              });
 
-             talksRef.child(key).set(talk);
+             Talks.fireRef.child(key).set(talk);
          };
      });
 
