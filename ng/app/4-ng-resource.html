@@ -44,8 +44,12 @@
      app.controller('proposalCtrl', function ($resource) {
          var self = this;
 
-         var talksBackend = $resource('/talks');
-         self.talks = talksBackend.query();
+         var Talks = $resource('/talks');
+         // .get(), .save(), .remove()
+         self.talks = Talks.query();
+         self.talks.$promise.then(function (res) {
+             console.log(res);
+         });
 
          self.submit = function () {
              self.talks.push(self.newTalk);
